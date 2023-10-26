@@ -53,11 +53,28 @@ const DockApp = () => {
     let MapTab = {
         title: 'Map',
         content: (
-            <MapComponent />),
-        group: 'close-all'
+            <MapComponent />)
     };
 
     let count = 0;
+    let floatTab = {
+        id: 'float1',
+        title: 'New Window',
+        content: (
+            <div>
+                <p>Right click on the max button ⇗</p>
+            </div>
+        )
+    };
+    let floatTab1 = {
+        id: 'float2',
+        title: 'New Window1',
+        content: (
+            <div>
+                <p>Right click on the max button ⇗</p>
+            </div>
+        )
+    };
 
     function newTab() {
         return {
@@ -81,32 +98,26 @@ const DockApp = () => {
                     children: [
                         {
                             tabs: [{...MapTab, id: 't1'}],
-                        },
-                        {
-                            tabs: [newTab(), newTab()],
-                            panelLock: {
-                                minWidth: 200,
-                                panelExtra: (panelData: any, context: any) => (
-                                    <button className='btn'
-                                            onClick={() => context.dockMove(newTab(), panelData, 'middle')}>
-                                        add
-                                    </button>
-                                )
-                            }
-                        },
+                        }
                     ]
-                },
+                }
+
+            ]
+        },
+        floatbox: {
+            mode: 'float',
+            children: [
                 {
-                    size: 300,
-                    tabs: [{...tab, id: 't5'}, {...tab, id: 't6'}],
-                },
+                    tabs: [floatTab, floatTab1],
+                    x: 60, y: 60, w: 320, h: 300
+                }
             ]
         }
     };
 
     return (
         <DockLayout defaultLayout={box} groups={groups}
-                    style={{position: 'absolute', left: 10, top: 10, right: 10, bottom: 10}}/>
+                    style={{position: 'absolute', left: 0, top: 20, right: 0, bottom: 0}}/>
     );
 }
 
