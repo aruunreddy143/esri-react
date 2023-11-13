@@ -58,14 +58,13 @@ const DockSpan = () => {
         <>
             <div onClick={loadData}>Load Data</div>
             <div id="dock_div" style={{"height": "500px", position: "absolute"}}>
-                hi
+               This is panel 1
             </div>
 
             <div id="dock_div2" style={{"height": "500px", position: "absolute"}}>
-               test 2
+               Panel test 2
             </div>
-            <div id="dock_div1"
-                 style={{"height": "100%", "width": "100%", "top": "50px", "left": "0", position: "absolute"}}>
+            <div id="dock_div1" >
                 <div id="my_dock_manager1" className="my-dock-manager"
                      style={{"position": "absolute", width: '100%', height: '100%', "left": "0"}}></div>
                 <div id="edt1_1" data-panel-caption="Map"><MapComponent/></div>

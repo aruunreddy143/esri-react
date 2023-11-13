@@ -12,12 +12,13 @@ code {
     monospace;
 }
 html,
-body,
-#mapNode {
+body
+{
   margin: 0;
   padding: 0;
-  height: 100vh;
-  width: 100vw;
+}
+
+#mapNode {
   overflow: hidden;
 }
 
@@ -28,8 +29,10 @@ h1, p {
   height: 100%;
   width: 100%
 }
-.dock_div1 {
+#dock_div1 {
   overflow: hidden;
+  height: calc(100% - 50px);
+width: calc(100%); top: 50px; left: 0; position: absolute
 }
 .dock-container, .dockspan-tab-host  {
   left: 0;
