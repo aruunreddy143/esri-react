@@ -3889,6 +3889,11 @@ dns-packet@^5.2.2:
   dependencies:
     "@leichtgewicht/ip-codec" "^2.0.1"
 
+dock-spawn-ts@^2.523.0:
+  version "2.523.0"
+  resolved "https://registry.yarnpkg.com/dock-spawn-ts/-/dock-spawn-ts-2.523.0.tgz#c17fbae82d093e2708c4f1c0df1c4cf95148bbbf"
+  integrity sha512-6intkSIM6xbd9+wgo25uHtuAHHQfEJVjzUElHzXNiI97LQapseFXsefR+3F95MUGw0TGP9FwoBvStQmr9zzsVw==
+
 doctrine@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/doctrine/-/doctrine-2.1.0.tgz#5cd01fc101621b42c4cd7f5d1a66243716d3f39d"

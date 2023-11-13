@@ -12,6 +12,7 @@
     "@types/react": "^18.2.30",
     "@types/react-dom": "^18.2.14",
     "@types/react-redux": "^7.1.28",
+    "dock-spawn-ts": "^2.523.0",
     "esri-loader": "^3.7.0",
     "fg-loadcss": "^3.1.0",
     "rc-dock": "^3.2.18",

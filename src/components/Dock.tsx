@@ -3,10 +3,12 @@ import * as ReactDOM from 'react-dom';
 import {DockLayout, DockContextType} from 'rc-dock';
 import "rc-dock/dist/rc-dock.css";
 import MapComponent from "../Map";
+import {useRef, useState} from "react";
 
 
 
 const DockApp = () => {
+    const dockRef: any = useRef()
     let groups = {
         'close-all': {
             floatable: true,
@@ -108,16 +110,64 @@ const DockApp = () => {
             mode: 'float',
             children: [
                 {
-                    tabs: [floatTab, floatTab1],
+                    tabs: [floatTab],
                     x: 60, y: 60, w: 320, h: 300
                 }
+
             ]
         }
     };
 
+    const [layout, setLayout] = useState(box)
+    const addWindow = (e: any) => {
+        e.preventDefault()
+        let obj = {
+            ...box,
+        }
+        obj.floatbox = {
+                mode: 'float',
+                children: [
+                    {
+                        tabs: [floatTab],
+                        x: 60, y: 60, w: 320, h: 300
+                    }
+
+                ]
+        }
+        //obj.floatbox.children[0].tabs.push(floatTab1)
+        setLayout(obj)
+
+        //dockRef.loadLayout(newTab, 'my_panel', 'middle');
+
+    }
+    const loadTab = (data:  {     id: any;     group: string;     title: string;     content: JSX.Element;     closable?: undefined; }) => {
+        let {id} = data;
+        switch (id) {
+            case 't0':
+                return {...tab, id, group: 'card custom'};
+            case 'protect1' :
+                return {
+                    id, title: 'Protect',
+                    closable: true,
+                    content: "<p>Removal of this tab will be rejected</p>",
+                    group: 'card custom'
+                };
+
+        }
+
+        return {
+            id, title: id,
+            content: "Tab Content",
+            group: 'card custom'
+        };
+    };
+    // @ts-ignore
     return (
-        <DockLayout defaultLayout={box} groups={groups}
-                    style={{position: 'absolute', left: 0, top: 20, right: 0, bottom: 0}}/>
+        <>
+            <a href="#" onClick={(e) =>addWindow(e)}>Click to add new window</a>
+        <DockLayout ref={dockRef} layout={layout}  groups={groups}
+                    style={{position: 'absolute', left: 0, top: 40, right: 0, bottom: 0}}/>
+        </>
     );
 }
 
