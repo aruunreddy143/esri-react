@@ -34,8 +34,39 @@ h1, p {
   height: calc(100% - 50px);
 width: calc(100%); top: 50px; left: 0; position: absolute
 }
+.panel-element-content-container{
+  pointer-events: all;
+}
+
 .dock-container, .dockspan-tab-host  {
   left: 0;
   width: 100%;
   overflow: hidden;
+}
+.dockspan-tab-host {
+  display: flex;
+  flex-direction: column-reverse;
+  cursor: pointer;
+  position: absolute
+}
+.document-manager > .dockspan-tab-host {
+  flex-direction:column
+}
+.dockspan-tab-handle {
+  color:#FFF;
+}
+.dockspan-tab-handle-text  {
+  margin-top: 0 !important
+}
+.dock-tabpane  {
+  padding: 10px
+}
+.dock-top .dock-bar {
+  padding: 0 10px;
+}
+.my-panel-extra-btn {
+  padding-left: 5px;
+  padding-top: 4px;
+  display: inline-block;
+  cursor: pointer;
 }

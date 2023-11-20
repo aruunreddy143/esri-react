@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {DockLayout, DockContextType} from 'rc-dock';
+import {DockLayout, DockContextType, DragDropDiv,} from 'rc-dock';
 import "rc-dock/dist/rc-dock.css";
 import MapComponent from "../Map";
 import {useRef, useState} from "react";
-
+import Counter from "../Counter";
 
 
 const DockApp = () => {
@@ -21,7 +21,7 @@ const DockApp = () => {
                         <span className='my-panel-extra-btn' key='maximize'
                               title={panelData.parent.mode === 'maximize' ? 'Restore' : 'Maximize'}
                               onClick={() => context.dockMove(panelData, null, 'maximize')}>
-          {panelData.parent.mode === 'maximize' ? '▬' : '▣'}
+          {panelData.parent.mode === 'maximize' ? '-' : '+'}
           </span>
                     )
                     buttons.push(
@@ -33,13 +33,27 @@ const DockApp = () => {
                 }
                 buttons.push(
                     <span className='my-panel-extra-btn' key='close' title='Close'
-                          onClick={() => context.dockMove(panelData, null, 'remove')}>
+                          onClick={(e) => {
+                              console.log(e)
+                              context.dockMove(panelData, null, 'remove')
+                          }}>
           X
         </span>
                 )
                 return <div>{buttons}</div>
             }
+        },
+        allowWindow: {
+            floatable: true,
+            newWindow: true,
+            maximizable: true,
+        },
+        'locked': {
+            floatable: true,
+            tabLocked: false,
+
         }
+
     };
 
     let tab = {
@@ -53,9 +67,11 @@ const DockApp = () => {
     };
 
     let MapTab = {
+        id: 'MapTab',
         title: 'Map',
         content: (
-            <MapComponent />)
+            <MapComponent/>),
+        group: 'locked',
     };
 
     let count = 0;
@@ -65,8 +81,10 @@ const DockApp = () => {
         content: (
             <div>
                 <p>Right click on the max button ⇗</p>
+                <Counter/>
             </div>
-        )
+        ),
+        group: 'close-all'
     };
     let floatTab1 = {
         id: 'float2',
@@ -75,7 +93,8 @@ const DockApp = () => {
             <div>
                 <p>Right click on the max button ⇗</p>
             </div>
-        )
+        ),
+        group: 'allowWindow'
     };
 
     function newTab() {
@@ -99,7 +118,7 @@ const DockApp = () => {
                     size: 500,
                     children: [
                         {
-                            tabs: [{...MapTab, id: 't1'}],
+                            tabs: [{...MapTab}]
                         }
                     ]
                 }
@@ -108,6 +127,7 @@ const DockApp = () => {
         },
         floatbox: {
             mode: 'float',
+            id: 'floatMain',
             children: [
                 {
                     tabs: [floatTab],
@@ -118,29 +138,52 @@ const DockApp = () => {
         }
     };
 
-    const [layout, setLayout] = useState(box)
-    const addWindow = (e: any) => {
-        e.preventDefault()
-        let obj = {
-            ...box,
-        }
-        obj.floatbox = {
+    function getTab(id: any, value: any, tabName: any) {
+        if(tabName === 'layer') {
+            return {
+                id: tabName,
+                title: tabName,
+                content: (
+                    <div>
+                        This is layer name
+                    </div>
+                ),
                 mode: 'float',
-                children: [
-                    {
-                        tabs: [floatTab],
-                        x: 60, y: 60, w: 320, h: 300
-                    }
-
-                ]
+                group: 'close-all'
+            }
         }
-        //obj.floatbox.children[0].tabs.push(floatTab1)
-        setLayout(obj)
+        return {
+            id: tabName,
+            content: (
+                <div>
+                    <p>It's easier to use React Context to update tab,<br/>
+                        but in some use cases you might need to directly update the tab.</p>
+                    {
+                        id !== `tab${value}` ?
+                            <p>Only current active tab will be changed</p>
+                            : null
+                    }<Counter/>
+                    value is {value}
+                </div>
+            ),
+            title: tabName,
+            mode: 'float',
+            group: 'close-all'
+        }
+    }
 
-        //dockRef.loadLayout(newTab, 'my_panel', 'middle');
+    const [layout, setLayout] = useState(box)
+    count = 1;
+    const addWindow = (e: any, tabName: any) => {
+        e.preventDefault()
+        console.log(e, dockRef.current.getDockId())
+        ++count;
+        let newTab = getTab(`tab${count}`, count, tabName)
+        dockRef.current.dockMove(newTab, null, 'new-window');
 
     }
-    const loadTab = (data:  {     id: any;     group: string;     title: string;     content: JSX.Element;     closable?: undefined; }) => {
+    console.log('dockRef', dockRef)
+    const loadTab = (data: { id: any; group: string; title: string; content: JSX.Element; closable?: undefined; }) => {
         let {id} = data;
         switch (id) {
             case 't0':
@@ -161,12 +204,17 @@ const DockApp = () => {
             group: 'card custom'
         };
     };
+    const onLayoutChange =(e: any) => {
+        console.log(e)
+    }
+    // @ts-ignore
     // @ts-ignore
     return (
         <>
-            <a href="#" onClick={(e) =>addWindow(e)}>Click to add new window</a>
-        <DockLayout ref={dockRef} layout={layout}  groups={groups}
-                    style={{position: 'absolute', left: 0, top: 40, right: 0, bottom: 0}}/>
+            <a href="#" onClick={(e) => addWindow(e, 'layer')}>Click layer</a>
+            <a href="#" onClick={(e) => addWindow(e, 'Bookmark')}>Click Bookmark</a>
+            <DockLayout ref={dockRef} defaultLayout={layout} groups={groups} onLayoutChange={(e) => onLayoutChange(e)}
+                        style={{position: 'absolute', left: 0, top: 40, right: 0, bottom: 0}}/>
         </>
     );
 }

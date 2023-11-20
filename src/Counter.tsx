@@ -7,9 +7,16 @@ const Counter = () => {
     const count = useSelector((state: RootState) => state.counter.value)
     const dispatch = useDispatch()
 
+    const clickInc = (e: any) => {
+        e.stopPropagation();
+        e.preventDefault()
+        console.log('hi')
+    }
+
     return (
-        <div>
+        <div onMouseDown={(e) => e.stopPropagation()}>
             <div>
+
                 <button
                     aria-label="Increment value"
                     onClick={() => dispatch(increment())}

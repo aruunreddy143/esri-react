@@ -5,6 +5,7 @@ import {useSelector} from "react-redux";
 import type { RootState } from './redux/store'
 import Counter from "./Counter";
 import DockSpan from "./components/DockSpan";
+import Dock from "./components/Dock";
 const Header = React.lazy(() => import('./common/header/Header'));
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
     return (
     <div className="App">
         <Header />
-        <DockSpan />
+        <Dock />
 
 
     </div>
