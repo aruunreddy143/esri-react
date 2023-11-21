@@ -1,10 +1,10 @@
 import * as React from 'react';
-import {DockLayout} from 'rc-dock';
+import * as ReactDOM from 'react-dom';
+import {DockLayout, DockContextType, DragDropDiv,} from 'rc-dock';
 import "rc-dock/dist/rc-dock.css";
 import MapComponent from "../Map";
-import {useRef} from "react";
+import {useRef, useState} from "react";
 import Counter from "../Counter";
-import LayerManager from "./layermanager/LayerManager";
 
 
 const DockApp = () => {
@@ -51,7 +51,19 @@ const DockApp = () => {
         'locked': {
             floatable: true,
             tabLocked: false,
+
         }
+
+    };
+
+    let tab = {
+        title: 'Tab',
+        content: (
+            <div>
+                <p>Custom component can be added to panel's title bar.</p>
+                <p>This panel has a custom maximize button and a close all button</p>
+            </div>),
+        group: 'close-all'
     };
 
     let MapTab = {
@@ -61,6 +73,41 @@ const DockApp = () => {
             <MapComponent/>),
         group: 'locked',
     };
+
+    let count = 0;
+    let floatTab = {
+        id: 'float1',
+        title: 'New Window',
+        content: (
+            <div>
+                <p>Right click on the max button ⇗</p>
+                <Counter/>
+            </div>
+        ),
+        group: 'close-all'
+    };
+    let floatTab1 = {
+        id: 'float2',
+        title: 'New Window1',
+        content: (
+            <div>
+                <p>Right click on the max button ⇗</p>
+            </div>
+        ),
+        group: 'allowWindow'
+    };
+
+    function newTab() {
+        return {
+            id: `newtab${++count}`,
+            title: 'New Tab',
+            mode: 'float',
+            content: (
+                <div>
+                    <p>This panel has an 'add' button defined in panelLock</p>
+                </div>)
+        };
+    }
 
     let box: any = {
         dockbox: {
@@ -77,53 +124,96 @@ const DockApp = () => {
                 }
 
             ]
-        }
+        }/*,
+        floatbox: {
+            mode: 'float',
+            id: 'floatMain',
+            children: [
+                {
+                    tabs: [floatTab],
+                    x: 60, y: 60, w: 320, h: 300
+                }
+
+            ]
+        }*/
     };
 
-    function getTab(tabName: any) {
-
-        const sharedTabObj = {
-            title: tabName,
-            id: tabName,
-            mode: 'float',
-            group: 'close-all'
-        }
-
+    function getTab(id: any, value: any, tabName: any) {
         if(tabName === 'layer') {
             return {
-                content: (<LayerManager />),
-               ...sharedTabObj
+                id: tabName,
+                title: tabName,
+                content: (
+                    <div>
+                        This is layer name
+                    </div>
+                ),
+                mode: 'float',
+                group: 'close-all'
             }
         }
         return {
+            id: tabName,
             content: (
                 <div>
                     <p>It's easier to use React Context to update tab,<br/>
                         but in some use cases you might need to directly update the tab.</p>
-                    <Counter/>
+                    {
+                        id !== `tab${value}` ?
+                            <p>Only current active tab will be changed</p>
+                            : null
+                    }<Counter/>
+                    value is {value}
                 </div>
             ),
-            ...sharedTabObj
+            title: tabName,
+            mode: 'float',
+            group: 'close-all'
         }
     }
 
+    const [layout, setLayout] = useState(box)
+    count = 1;
     const addWindow = (e: any, tabName: any) => {
         e.preventDefault()
         console.log(e, dockRef.current.getDockId())
-        let newTab = getTab(tabName)
+        ++count;
+        let newTab = getTab(`tab${count}`, count, tabName)
         dockRef.current.dockMove(newTab, null, 'new-window');
+
     }
     console.log('dockRef', dockRef)
+    const loadTab = (data: { id: any; group: string; title: string; content: JSX.Element; closable?: undefined; }) => {
+        let {id} = data;
+        switch (id) {
+            case 't0':
+                return {...tab, id, group: 'card custom'};
+            case 'protect1' :
+                return {
+                    id, title: 'Protect',
+                    closable: true,
+                    content: "<p>Removal of this tab will be rejected</p>",
+                    group: 'card custom'
+                };
 
+        }
+
+        return {
+            id, title: id,
+            content: "Tab Content",
+            group: 'card custom'
+        };
+    };
     const onLayoutChange =(e: any) => {
         console.log(e)
     }
+    // @ts-ignore
     // @ts-ignore
     return (
         <>
             <a href="#" onClick={(e) => addWindow(e, 'layer')}>Click layer</a>
             <a href="#" onClick={(e) => addWindow(e, 'Bookmark')}>Click Bookmark</a>
-            <DockLayout ref={dockRef} defaultLayout={box} groups={groups} onLayoutChange={(e) => onLayoutChange(e)}
+            <DockLayout ref={dockRef} defaultLayout={layout} groups={groups} onLayoutChange={(e) => onLayoutChange(e)}
                         style={{position: 'absolute', left: 0, top: 40, right: 0, bottom: 0}}/>
         </>
     );

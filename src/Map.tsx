@@ -1,8 +1,11 @@
 import React, {useEffect, useRef, useState} from 'react';
 import { loadModules } from 'esri-loader';
+import {useDispatch} from "react-redux";
+import {updateMap} from "./redux/MapSlice";
 
 const MapComponent = () => {
     const mapRef = useRef<any>();
+    const dispatch = useDispatch()
 
     useEffect(
         () => {
@@ -21,13 +24,15 @@ const MapComponent = () => {
                         zoom: 3
                     });
 
+                    dispatch(updateMap(view))
+
                     const polygon = {
                         type: "polygon", // autocasts as new Polygon()
                         rings: [
-                            [-64.78, 32.3],
-                            [-66.07, 18.45],
-                            [-80.21, 25.78],
-                            [-64.78, 32.3]
+                            [-34.78, 32.3],
+                            [-36.07, 18.45],
+                            [-40.21, 25.78],
+                            [-34.78, 32.3]
                         ]
                     };
 
