@@ -5,13 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {store} from './redux/store'
 import {Provider} from 'react-redux'
+import FormInputs from './common/FormInputs';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
+
 root.render(
     <Provider store={store}>
         <App/>
+        <FormInputs />
+
     </Provider>
 );
 

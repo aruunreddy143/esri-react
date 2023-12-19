@@ -1,10 +1,15 @@
 import * as React from 'react';
 import {DockLayout} from 'rc-dock';
 import "rc-dock/dist/rc-dock.css";
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
+import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import CloseIcon from '@mui/icons-material/Close';
 import MapComponent from "../Map";
 import {useRef} from "react";
 import Counter from "../Counter";
 import LayerManager from "./layermanager/LayerManager";
+//const LayerManager = React.lazy(() => import("./layermanager/LayerManager"));
 
 
 const DockApp = () => {
@@ -21,13 +26,13 @@ const DockApp = () => {
                         <span className='my-panel-extra-btn' key='maximize'
                               title={panelData.parent.mode === 'maximize' ? 'Restore' : 'Maximize'}
                               onClick={() => context.dockMove(panelData, null, 'maximize')}>
-          {panelData.parent.mode === 'maximize' ? '-' : '+'}
+          {panelData.parent.mode === 'maximize' ? <RemoveIcon fontSize={'small'} /> : <AddIcon fontSize={'small'} />}
           </span>
                     )
                     buttons.push(
                         <span className='my-panel-extra-btn' key='new-window' title='Open in new window'
-                              onClick={() => context.dockMove(panelData, null, 'new-window')}>
-          ⇪
+                              onClick={() => context.dockMove(panelData, 'null', 'new-window')}>
+          <OpenInNewIcon fontSize={'small'} />
           </span>
                     )
                 }
@@ -37,7 +42,7 @@ const DockApp = () => {
                               console.log(e)
                               context.dockMove(panelData, null, 'remove')
                           }}>
-          X
+          <CloseIcon fontSize={'small'} />
         </span>
                 )
                 return <div>{buttons}</div>
@@ -49,17 +54,17 @@ const DockApp = () => {
             maximizable: true,
         },
         'locked': {
-            floatable: true,
+            floatable: false,
             tabLocked: false,
         }
     };
 
     let MapTab = {
-        id: 'MapTab',
+        id: 'id1',
         title: 'Map',
         content: (
             <MapComponent/>),
-        group: 'locked',
+        group: 'close-all',
     };
 
     let box: any = {
@@ -79,13 +84,14 @@ const DockApp = () => {
             ]
         }
     };
-
-    function getTab(tabName: any) {
+    let count=2;
+    function getTab(tabName: any, id: any) {
+        count++;
 
         const sharedTabObj = {
             title: tabName,
-            id: tabName,
-            mode: 'float',
+            id: id,
+            mode: 'floatbox',
             group: 'close-all'
         }
 
@@ -107,22 +113,20 @@ const DockApp = () => {
         }
     }
 
-    const addWindow = (e: any, tabName: any) => {
+    const addWindow = (e: any, tabName: any, id: any) => {
         e.preventDefault()
         console.log(e, dockRef.current.getDockId())
-        let newTab = getTab(tabName)
-        dockRef.current.dockMove(newTab, null, 'new-window');
+        let newTab = getTab(tabName, id)
+        dockRef.current.dockMove(newTab, null, 'float');
     }
-    console.log('dockRef', dockRef)
-
     const onLayoutChange =(e: any) => {
         console.log(e)
     }
     // @ts-ignore
     return (
         <>
-            <a href="#" onClick={(e) => addWindow(e, 'layer')}>Click layer</a>
-            <a href="#" onClick={(e) => addWindow(e, 'Bookmark')}>Click Bookmark</a>
+            <a href="#" onClick={(e) => addWindow(e, 'layer', 'id2')}>Click layer</a>
+            <a href="#" onClick={(e) => addWindow(e, 'Bookmark', 'id3')}>Click Bookmark</a>
             <DockLayout ref={dockRef} defaultLayout={box} groups={groups} onLayoutChange={(e) => onLayoutChange(e)}
                         style={{position: 'absolute', left: 0, top: 40, right: 0, bottom: 0}}/>
         </>

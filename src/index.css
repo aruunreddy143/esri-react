@@ -58,9 +58,7 @@ width: calc(100%); top: 50px; left: 0; position: absolute
 .dockspan-tab-handle-text  {
   margin-top: 0 !important
 }
-.dock-tabpane  {
-  padding: 10px
-}
+
 .dock-top .dock-bar {
   padding: 0 10px;
 }
@@ -69,4 +67,7 @@ width: calc(100%); top: 50px; left: 0; position: absolute
   padding-top: 4px;
   display: inline-block;
   cursor: pointer;
+}
+.dock-box.dock-hbox .dock-extra-content{
+  display: none
 }
